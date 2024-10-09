@@ -3,7 +3,7 @@ import { CurrencyRequest, CurrencyResponse } from './types/Types'; // Adjust pat
 import { CurrencyCode } from '../enums/CurrencyCode'; // Adjust path if needed
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8000', // Your Spring Boot backend URL
+    baseURL: 'http://localhost:8100', // Your  backend URL
 });
 
 export const getExchangeValue = async (currencyRequest: CurrencyRequest): Promise<CurrencyResponse> => {

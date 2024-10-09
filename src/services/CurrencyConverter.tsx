@@ -75,7 +75,7 @@ const CurrencyConverter: React.FC = () => {
 
                 >
                     Convert
-                    Convert
+
                 </button>
             </div>
         </div>
