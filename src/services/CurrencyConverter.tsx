@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
 import { CurrencyRequest } from './types/Types';
 import { CurrencyCode } from '../enums/CurrencyCode';
-import { getExchangeValue } from './CurrencyService';
+import { useExchangeValue} from './CurrencyService';
 
 const CurrencyConverter: React.FC = () => {
     const [amount, setAmount] = useState<number>(1);
     const [fromCurrency, setFromCurrency] = useState<CurrencyCode>(CurrencyCode.USD);
     const [toCurrency, setToCurrency] = useState<CurrencyCode>(CurrencyCode.EUR);
-    const [convertedAmount, setConvertedAmount] = useState<number | null>(null);
 
-    const handleConvert = async () => {
-        const currencyRequest: CurrencyRequest = {
-            sourceCurrencyCode: fromCurrency,
-            targetCurrencyCode: toCurrency,
-            sourceAmountToConvert: amount,
-        };
 
-        try {
-            const response = await getExchangeValue(currencyRequest);
-            setConvertedAmount(response.targetAmountConverted);
-        } catch (error) {
-            console.error('Error converting currency:', error);
-        }
+
+    const currencyRequest: CurrencyRequest = {
+        sourceCurrencyCode: fromCurrency,
+        targetCurrencyCode: toCurrency,
+        sourceAmountToConvert: amount,
     };
-
+    const {data ,isFetching, isError, refetch,error} =useExchangeValue(currencyRequest);
+    const handleConvert = () => {
+        refetch();
+    };
+    if (isError){
+        return <>erreur {error}</>
+    }
     return (
         <div className="max-w-2xl mx-auto p-8 bg-grey-300  shadow-lg rounded-lg  mt-12  ">
             <h1 className="text-3xl font-bold mb-8 text-center ">Real Time Currency Converter</h1>
@@ -55,7 +53,8 @@ const CurrencyConverter: React.FC = () => {
                 {/* Converted Amount and To Currency */}
                 <div className="flex items-center border-2 border-green-300 rounded-lg overflow-hidden">
                     <div className="w-2/3 p-4 text-2xl ">
-                        {convertedAmount !== null ? convertedAmount : 'Result '}
+                        {data ? data.targetAmountConverted : 'Result '}
+                        {isFetching  && 'loading'}
                     </div>
                     <select
                         value={toCurrency}
